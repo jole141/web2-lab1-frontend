@@ -24,7 +24,7 @@ const Title = styled.div`
 `;
 
 export const Header: FC = () => {
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   const handleSignUp = async () => {
     await loginWithRedirect({
@@ -53,8 +53,7 @@ export const Header: FC = () => {
 
   return (
     <HeaderContainer>
-      <Title>HNL Scores</Title>
-      <p>{user?.name}</p>
+      <Title>HNL Rezultati</Title>
       {!isAuthenticated ? (
         <span>
           <AuthButton label="Sign Up" onClick={handleSignUp} />
