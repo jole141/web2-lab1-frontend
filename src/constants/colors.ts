@@ -13,4 +13,5 @@ export const colors = {
   light: "#f5f5f5",
   transparent: "transparent",
   darkWhite: "#f5f5f5",
+  blackOpacity: "rgba(0, 0, 0, 0.6)",
 };

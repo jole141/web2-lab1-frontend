@@ -13,7 +13,6 @@ export interface Match {
   score_point_0: number;
   score_point_1: number;
   date: string;
-  finished: boolean;
-  team0: number;
-  team1: number;
+  team0: string;
+  team1: string;
 }
