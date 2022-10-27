@@ -112,7 +112,7 @@ const Club = styled.div`
   margin: 0.5rem;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   padding: 0.5rem;
@@ -128,7 +128,7 @@ const Form = styled.div`
 `;
 
 export const Matches: FC = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
 
   const [accessToken, setAccessToken] = useState("");
@@ -164,10 +164,10 @@ export const Matches: FC = () => {
   }, [isAuthenticated, getAccessTokenSilently]);
 
   useEffect(() => {
-    if (accessToken) {
+    if (user) {
       getUserInfo();
     }
-  }, [accessToken]);
+  }, [user]);
 
   const getInfo = async () => {
     setIsLoading(true);
@@ -179,8 +179,7 @@ export const Matches: FC = () => {
   };
 
   const getUserInfo = async () => {
-    const response = await isUserAdmin(accessToken);
-    setIsAdmin(response);
+    setIsAdmin(isUserAdmin(user?.name!));
   };
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Club, Match } from "../types";
+import { Club, IComment, Match } from "../types";
 
 export const getClubTable = async (): Promise<Club[]> => {
   const response = await axios.get(
@@ -88,4 +88,73 @@ export const updateResults = async (
       },
     }
   );
+};
+
+export const createComment = async (
+  id: string,
+  comment: string,
+  token: string
+): Promise<void> => {
+  await axios.post(
+    `${process.env.REACT_APP_API_SERVER_URL}/comments`,
+    {
+      matchId: parseInt(id, 10),
+      comment: comment,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const updateComment = async (
+  id: string,
+  comment: string,
+  token: string
+): Promise<void> => {
+  await axios.put(
+    `${process.env.REACT_APP_API_SERVER_URL}/comments/edit/${id}`,
+    {
+      comment: comment,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const deleteComment = async (
+  id: string,
+  token: string
+): Promise<void> => {
+  await axios.delete(`${process.env.REACT_APP_API_SERVER_URL}/comments/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteCommentAdmin = async (
+  id: string,
+  token: string
+): Promise<void> => {
+  await axios.delete(
+    `${process.env.REACT_APP_API_SERVER_URL}/comments/admin/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const getCommentsApi = async (id: string): Promise<IComment[]> => {
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_SERVER_URL}/comments/${id}`
+  );
+  return response.data;
 };

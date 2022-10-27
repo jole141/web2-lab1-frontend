@@ -4,12 +4,13 @@ import { Homepage } from "./pages/Homepage";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Matches } from "./pages/Matches";
 import { Comments } from "./pages/Comments";
+import Loader from "./components/Loader";
 
 function App() {
   const { isLoading } = useAuth0();
 
   if (isLoading) {
-    return <div>LOADING</div>;
+    return <Loader />;
   }
 
   return (

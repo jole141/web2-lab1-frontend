@@ -16,3 +16,11 @@ export interface Match {
   team0: string;
   team1: string;
 }
+
+export interface IComment {
+  comment_id: number;
+  comment: string;
+  match_id: number;
+  email: string;
+  datetime: string;
+}

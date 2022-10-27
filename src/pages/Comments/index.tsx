@@ -1,15 +1,22 @@
 import React, { FC, useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import Header from "../../components/Header";
-import { addScore, getMatchById, updateResults } from "../../api/api";
+import {
+  addScore,
+  createComment,
+  getCommentsApi,
+  getMatchById,
+  updateResults,
+} from "../../api/api";
 import styled from "styled-components";
-import { Match } from "../../types";
+import { IComment, Match } from "../../types";
 import Loader from "../../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../constants/colors";
 import { NavButton } from "../Homepage";
 import { convertTimestampToDate, isUserAdmin } from "../../utils";
-import { CustomButton, CustomButtonSecondary } from "../Matches";
+import { CustomButton, CustomButtonSecondary, Input } from "../Matches";
+import Comment from "../../components/Comment";
 
 const MatchesTable = styled.div`
   width: 40rem;
@@ -49,22 +56,6 @@ const CommentsContainer = styled.div`
   flex-direction: column;
 `;
 
-const Comment = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.8rem;
-`;
-
-const Owner = styled.div`
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: ${colors.dark};
-  margin-bottom: 0.5rem;
-`;
-
 const NumberInput = styled.input`
   width: 1.6rem;
   height: 1.6rem;
@@ -76,7 +67,7 @@ const NumberInput = styled.input`
 `;
 
 export const Comments: FC = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const navigate = useNavigate();
 
   let { id } = useParams();
@@ -90,9 +81,21 @@ export const Comments: FC = () => {
   const [awayScore, setAwayScore] = useState("0");
   const [editMode, setEditMode] = useState(false);
 
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<IComment[]>([]);
+
   const getUserInfo = async () => {
-    const response = await isUserAdmin(accessToken);
-    setIsAdmin(response);
+    setIsAdmin(isUserAdmin(user?.name!));
+  };
+
+  const addComment = async () => {
+    setIsLoading(true);
+    if (id) {
+      await createComment(id, comment, accessToken);
+      await getComments(id);
+    }
+    setComment("");
+    setIsLoading(false);
   };
 
   const getMatchInfo = async (id: string) => {
@@ -101,6 +104,13 @@ export const Comments: FC = () => {
     if (response.score_point_0) setHomeScore(response.score_point_0.toString());
     if (response.score_point_1) setAwayScore(response.score_point_1.toString());
     setMatch(response);
+    setIsLoading(false);
+  };
+
+  const getComments = async (id: string) => {
+    setIsLoading(true);
+    const response = await getCommentsApi(id);
+    setComments(response);
     setIsLoading(false);
   };
 
@@ -128,10 +138,10 @@ export const Comments: FC = () => {
   };
 
   useEffect(() => {
-    if (accessToken) {
+    if (user) {
       getUserInfo();
     }
-  }, [accessToken]);
+  }, [user]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -144,6 +154,7 @@ export const Comments: FC = () => {
   useEffect(() => {
     if (id) {
       getMatchInfo(id);
+      getComments(id);
     }
   }, [id]);
 
@@ -194,23 +205,39 @@ export const Comments: FC = () => {
               )}
             </>
           )}
-          <h3>Komentari</h3>
-          <CommentsContainer>
-            <Comment>
-              <Owner>test@mail.com</Owner>
-              <div>
-                Ovo je testni komentar i ovo je najgluplji labos na svijetu.
-                Umirem dok ga radim. Ak ne dobijem sve bodove strgat cu ruke i
-                noge profesorima
-              </div>
-            </Comment>
-            <Comment>
-              <Owner>smrdljivi.joza@mail.com</Owner>
-              <div>
-                Oj diname oj diname oj diname oj diname oj diname oj diname oj
-              </div>
-            </Comment>
-          </CommentsContainer>
+          {isAuthenticated && (
+            <>
+              <h3>Komentari</h3>
+              <CommentsContainer>
+                <span>
+                  <Input
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    style={{ width: "76%" }}
+                  />
+                  <CustomButton
+                    style={{ width: "12%", padding: "0.5rem" }}
+                    onClick={addComment}
+                  >
+                    Pošalji
+                  </CustomButton>
+                </span>
+                {comments &&
+                  comments.map((comment: any) => (
+                    <Comment
+                      key={comment.comment_id}
+                      id={comment.comment_id}
+                      matchId={comment.match_id.toString()}
+                      getComments={getComments}
+                      owner={comment.email}
+                      text={comment.comment}
+                      setIsLoading={setIsLoading}
+                      datetime={comment.datetime}
+                    />
+                  ))}
+              </CommentsContainer>
+            </>
+          )}
         </MatchesTable>
       </Container>
     </>

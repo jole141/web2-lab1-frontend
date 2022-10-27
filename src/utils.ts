@@ -1,5 +1,4 @@
 import { admins } from "./constants/admin";
-import axios from "axios";
 
 export function convertTimestampToDate(timestamp: string) {
   const date = new Date(timestamp);
@@ -13,14 +12,6 @@ export function convertTimestampToDate(timestamp: string) {
   return `${day}.${month}.${year} ${hour}:${minute}`;
 }
 
-export async function isUserAdmin(token: string) {
-  const tokenInfoResponse = await axios.get(
-    `https://${process.env.REACT_APP_AUTH0_DOMAIN}/userinfo`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return admins.includes(tokenInfoResponse.data.name);
+export function isUserAdmin(user: string) {
+  return admins.includes(user);
 }
