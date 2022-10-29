@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { colors } from "../../constants/colors";
 
 const LoaderContainer = styled.div`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100vh;
   z-index: 100;
