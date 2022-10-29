@@ -23,8 +23,23 @@ const Title = styled.div`
   margin: 0;
 `;
 
+const User = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${colors.white};
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0;
+`;
+
+const LogoutSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
 export const Header: FC = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
   const handleSignUp = async () => {
     await loginWithRedirect({
@@ -65,14 +80,15 @@ export const Header: FC = () => {
           />
         </span>
       ) : (
-        <>
+        <LogoutSection>
+          {user && <User>{user.name}</User>}
           <AuthButton
             color={colors.white}
             backgroundColor={colors.error}
             label="Log Out"
             onClick={handleLogout}
           />
-        </>
+        </LogoutSection>
       )}
     </HeaderContainer>
   );
