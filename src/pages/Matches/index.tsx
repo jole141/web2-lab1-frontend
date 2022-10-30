@@ -224,7 +224,9 @@ export const Matches: FC = () => {
       <Container>
         <NavButton onClick={() => navigate("/")}>Pregled tablice</NavButton>
         <Title>Nadolazeće utakmice</Title>
-        <Info>INFO: Pritisnite na utakmicu kako biste vidjeli komentare</Info>
+        {user && (
+          <Info>INFO: Pritisnite na utakmicu kako biste vidjeli komentare</Info>
+        )}
         {isAdmin && (
           <CustomButton onClick={() => setShowModal(true)}>
             Unesi utakmicu
@@ -254,7 +256,9 @@ export const Matches: FC = () => {
           )}
         </MatchesTable>
         <Title>Odigrane utakmice</Title>
-        <Info>INFO: Pritisnite na utakmicu kako biste vidjeli komentare</Info>
+        {user && (
+          <Info>INFO: Pritisnite na utakmicu kako biste vidjeli komentare</Info>
+        )}
         <MatchesTable>
           {finishedMatches ? (
             finishedMatches.map((match) => (
