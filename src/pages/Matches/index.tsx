@@ -238,7 +238,9 @@ export const Matches: FC = () => {
               <>
                 <MatchInfo
                   key={match.match_id}
-                  onClick={() => navigate(`/komentari/${match.match_id}`)}
+                  onClick={() => {
+                    if (user) navigate(`/komentari/${match.match_id}`);
+                  }}
                 >
                   <p>{match.team0}</p>
 
@@ -264,7 +266,9 @@ export const Matches: FC = () => {
             finishedMatches.map((match) => (
               <MatchInfo
                 key={match.match_id}
-                onClick={() => navigate(`/komentari/${match.match_id}`)}
+                onClick={() => {
+                  if (user) navigate(`/komentari/${match.match_id}`);
+                }}
               >
                 <p>{match.team0}</p>
                 <p>{`${match.score_point_0 || "-"} : ${
